@@ -1,0 +1,5 @@
+user: 'neo4j'
+pwd: '1234'
+host: 'neo4j://neo4j:7687'
+connect_result_nodes: False
+cmd_timeout: null

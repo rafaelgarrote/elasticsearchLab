@@ -1,0 +1,40 @@
+version: '3.1'
+services:    
+  elasticsearch:
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:8.3.2'
+    restart: always
+#    network_mode: "host"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment: 
+      - discovery.type=single-node
+      - cluster.name=datahack-nosql
+      - http.cors.enabled=true
+      - path.repo=/usr/share/elasticsearch
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#    volumes:
+#      - ".data/db/elasticsearch/data:/usr/share/elasticsearch/data"
+  kibana:
+    image: 'docker.elastic.co/kibana/kibana:8.3.2'
+#    network_mode: "host"
+    ports:
+      - "5601:5601"
+    environment:
+      SERVER_NAME: datahack
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+  jupyter:
+    image: 'rafaelgarrote/scipy-notebook:v0.5' 
+    restart: always
+#    network_mode: "host"
+    ports:
+      - "8889:8888"
+    environment:
+      - JUPYTER_LAB_ENABLE=yes
+      - GRANT_SUDO=yes
+    user: root  
+    volumes: 
+      - "./work:/home/jovyan/work"
+      - "./work/config/cypher_config.yml:/home/jovyan/.jupyter/cypher_config.yml"
+    entrypoint: bash -c "start-notebook.sh --NotebookApp.token=''"  
